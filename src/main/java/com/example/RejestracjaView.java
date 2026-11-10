@@ -33,15 +33,20 @@ public class RejestracjaView extends VerticalLayout {
 
     // krok 3.1 - klient instytucjonalny
     private final Checkbox instytucjonalny = new Checkbox("Rejestruję się jako instytucja");
+    private final Checkbox regulamin = new Checkbox("Zapoznałem się z regulaminem");
     private final TextField nazwaInstytucji = new TextField("Nazwa instytucji");
 
     public RejestracjaView() {
         setAlignItems(Alignment.CENTER);
+        setJustifyContentMode(JustifyContentMode.START);
+        setSizeFull();
+        setPadding(true);
 
         konfigurujPola();
 
         FormLayout form = new FormLayout();
-        form.add(imie, nazwisko, telefon, email, haslo, powtorzHaslo, instytucjonalny, nazwaInstytucji);
+        form.add(imie, nazwisko, telefon, email, haslo, powtorzHaslo, instytucjonalny, nazwaInstytucji,
+            regulamin);
         form.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("500px", 2));
@@ -49,6 +54,7 @@ public class RejestracjaView extends VerticalLayout {
         form.setColspan(instytucjonalny, 2);
         form.setColspan(nazwaInstytucji, 2);
         form.setColspan(email, 2);
+        form.setColspan(regulamin, 2);
         form.setMaxWidth("600px");
         form.setWidthFull();
 
@@ -70,6 +76,7 @@ public class RejestracjaView extends VerticalLayout {
                 {imie, nazwisko, telefon, email, haslo, powtorzHaslo, nazwaInstytucji}) {
             pole.setRequiredIndicatorVisible(true);
         }
+        regulamin.setRequiredIndicatorVisible(true);
 
         telefon.setPlaceholder("np. 600 123 456");
         telefon.setAllowedCharPattern("[0-9+ ]");
@@ -101,6 +108,13 @@ public class RejestracjaView extends VerticalLayout {
         poprawne &= wymagane(powtorzHaslo);
         if (instytucjonalny.getValue()) {
             poprawne &= wymagane(nazwaInstytucji);
+        }
+        if (!regulamin.getValue()) {
+            regulamin.setErrorMessage("Akceptacja regulaminu jest wymagana");
+            regulamin.setInvalid(true);
+            poprawne = false;
+        } else {
+            regulamin.setInvalid(false);
         }
 
         // dodatkowe reguły
