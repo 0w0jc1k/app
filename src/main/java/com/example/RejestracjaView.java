@@ -37,7 +37,9 @@ public class RejestracjaView extends VerticalLayout {
     private final TextField nazwaInstytucji = new TextField("Nazwa instytucji");
 
     public RejestracjaView() {
-        setAlignItems(Alignment.CENTER);
+        setWidthFull();                          // widok zajmuje całą szerokość strony
+        setAlignItems(Alignment.CENTER);         // elementy wyśrodkowane w poziomie
+        setJustifyContentMode(JustifyContentMode.START); // nagłówek zostaje na górze
         setJustifyContentMode(JustifyContentMode.START);
         setSizeFull();
         setPadding(true);
@@ -55,13 +57,14 @@ public class RejestracjaView extends VerticalLayout {
         form.setColspan(nazwaInstytucji, 2);
         form.setColspan(email, 2);
         form.setColspan(regulamin, 2);
+        form.setWidth("100%");
         form.setMaxWidth("600px");
-        form.setWidthFull();
+        form.getStyle().set("margin", "0 auto"); // formularz na środku strony
 
         Button zarejestruj = new Button("Zarejestruj się", e -> zatwierdz());
         zarejestruj.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        Button zalogujSie = new Button("Mam już konto", e -> UI.getCurrent().navigate("logowanie"));
+        Button zalogujSie = new Button("Mam już konto", e -> UI.getCurrent().navigate("login"));
         zalogujSie.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
         add(new H2("Rejestracja konta"),
@@ -151,7 +154,7 @@ public class RejestracjaView extends VerticalLayout {
         // sukces - warunek końcowy: Gość staje się Klientem
         Notification n = Notification.show("Konto zostało utworzone. Możesz się zalogować.");
         n.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-        UI.getCurrent().navigate("logowanie");
+        UI.getCurrent().navigate("login");
     }
 
     // --- pomocnicze ---
