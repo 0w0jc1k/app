@@ -22,6 +22,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 
 /**
  * Strona główna systemu - wyświetlana po wejściu na adres "/".
@@ -68,7 +69,8 @@ public class StronaGlownaView extends VerticalLayout {
 
     // Widoki, które już istnieją w projekcie. Pozostałe pokażą tylko komunikat.
     private static final Set<String> ISTNIEJACE_TRASY =
-            Set.of("login", "rejestracja", "katalog", "rezerwacja");
+        Set.of("login", "rejestracja", "katalog", "rezerwacja",
+               "administracja", "asortyment", "raporty");
 
     private static final List<Kategoria> KATEGORIE = List.of(
             new Kategoria("🎬", "Postacie filmowe i bajkowe", "Kostiumy znanych bohaterów"),
@@ -80,7 +82,15 @@ public class StronaGlownaView extends VerticalLayout {
             new Kategoria("🎭", "Przebrania karnawałowe", "Na bale przebierańców i Halloween"),
             new Kategoria("🎩", "Dodatki", "Kapelusze, maski, peruki, peleryny, biżuteria"));
 
-    private Rola rola = Rola.GOSC;
+    private Rola rola = odczytajRole();
+    private static Rola odczytajRole() {
+    Rola r = VaadinSession.getCurrent().getAttribute(Rola.class);
+    return r == null ? Rola.GOSC : r;
+}
+
+private void zapiszRole() {
+    VaadinSession.getCurrent().setAttribute(Rola.class, rola);
+}
 
     private final ComboBox<Rola> podgladRoli = new ComboBox<>("Podgląd jako:");
     private final VerticalLayout zawartosc = new VerticalLayout();
@@ -97,11 +107,12 @@ public class StronaGlownaView extends VerticalLayout {
         podgladRoli.setAllowCustomValue(false);
         podgladRoli.setWidth("260px");
         podgladRoli.addValueChangeListener(e -> {
-            if (e.getValue() != null) {
-                rola = e.getValue();
-                odswiez();
-            }
-        });
+    if (e.getValue() != null) {
+        rola = e.getValue();
+        zapiszRole();
+        odswiez();
+    }
+});
 
         zawartosc.setPadding(false);
         zawartosc.setSpacing(false);
@@ -309,7 +320,7 @@ public class StronaGlownaView extends VerticalLayout {
     }
 
     private Div kafelekGarderobaKierownik() {
-        return kafelek(VaadinIcon.ARCHIVE, "Zarządzanie asortymentem",
+        return kafelek(VaadinIcon.ARCHIVE, "Garderoba",
                 "Dodawanie i wycofywanie modeli oraz egzemplarzy, cennik.", "asortyment");
     }
 
