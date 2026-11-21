@@ -69,7 +69,7 @@ public class StronaGlownaView extends VerticalLayout {
 
     // Widoki, które już istnieją w projekcie. Pozostałe pokażą tylko komunikat.
     private static final Set<String> ISTNIEJACE_TRASY =
-        Set.of("login", "rejestracja", "katalog", "rezerwacja",
+        Set.of("login", "rejestracja", "katalog", "rezerwacja", "moje-rezerwacje",
                "administracja", "asortyment", "raporty");
 
     private static final List<Kategoria> KATEGORIE = List.of(
