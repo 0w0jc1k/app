@@ -53,7 +53,22 @@ public class KatalogView extends VerticalLayout {
                     65.0, List.of("S", "M", "L"), List.of("Czarny", "Fioletowy")),
             new ModelKostiumu("Suknia wieczorowa", "Suknie i balowe",
                     "Elegancka długa suknia wieczorowa z rozcięciem, na studniówkę lub galę.",
-                    90.0, List.of("XS", "S", "M"), List.of("Czerwony", "Zielony", "Czarny"))
+                    90.0, List.of("XS", "S", "M"), List.of("Czerwony", "Zielony", "Czarny")),
+                        new ModelKostiumu("Kapelusz cylinder", "Dodatki",
+                    "Elegancki czarny cylinder, pasuje do garnituru wieczorowego i stylizacji retro.",
+                    25.0, List.of("Uniwersalny"), List.of("Czarny")),
+            new ModelKostiumu("Maska wenecka", "Dodatki",
+                    "Zdobiona maska karnawałowa na gumce, idealna na bal maskowy.",
+                    30.0, List.of("Uniwersalny"), List.of("Złoty", "Srebrny", "Czerwony")),
+            new ModelKostiumu("Peruka barokowa", "Dodatki",
+                    "Długa pudrowa peruka z lokami, do strojów historycznych i balowych.",
+                    40.0, List.of("Uniwersalny"), List.of("Biały", "Różowy")),
+            new ModelKostiumu("Peleryna wampira", "Dodatki",
+                    "Czarna peleryna z czerwoną podszewką i wysokim kołnierzem.",
+                    35.0, List.of("M", "L", "XL"), List.of("Czarny")),
+            new ModelKostiumu("Zestaw biżuterii „Królowa”", "Dodatki",
+                    "Korona, naszyjnik i kolczyki w stylu królewskim, wykonane z kryształów ozdobnych.",
+                    45.0, List.of("Uniwersalny"), List.of("Złoty", "Srebrny"))
     );
 
     private final ComboBox<String> kategoria = new ComboBox<>("Kategoria");

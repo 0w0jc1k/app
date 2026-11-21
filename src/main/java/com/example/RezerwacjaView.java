@@ -36,23 +36,29 @@ import com.vaadin.flow.router.Route;
 @PageTitle("Rezerwacja")
 public class RezerwacjaView extends VerticalLayout {
 
-    record ModelInfo(String nazwa, double stawka, List<String> rozmiary) {
+    record ModelInfo(String nazwa, String kategoria, double stawka, List<String> rozmiary) {
     }
 
     record Egzemplarz(String id, String model, String rozmiar, String kolor, double stawka) {
     }
 
     private final List<ModelInfo> modele = List.of(
-            new ModelInfo("Suknia balowa „Księżniczka”", 120.0, List.of("S", "M", "L")),
-            new ModelInfo("Garnitur wieczorowy", 90.0, List.of("M", "L", "XL")),
-            new ModelInfo("Kostium Pirata", 70.0, List.of("S", "M", "L", "XL")),
-            new ModelInfo("Strój Mikołaja", 60.0, List.of("L", "XL")),
-            new ModelInfo("Kostium Elfa", 50.0, List.of("S", "M")),
-            new ModelInfo("Strój krakowski", 80.0, List.of("S", "M", "L")),
-            new ModelInfo("Kostium Czarownicy", 65.0, List.of("S", "M", "L")),
-            new ModelInfo("Suknia wieczorowa", 110.0, List.of("XS", "S", "M")));
+            new ModelInfo("Suknia balowa „Księżniczka”", "Suknie i balowe", 120.0, List.of("S", "M", "L")),
+            new ModelInfo("Suknia wieczorowa", "Suknie i balowe", 90.0, List.of("XS", "S", "M")),
+            new ModelInfo("Garnitur wieczorowy", "Garnitury", 90.0, List.of("M", "L", "XL")),
+            new ModelInfo("Kostium Pirata", "Przebrania", 70.0, List.of("S", "M", "L", "XL")),
+            new ModelInfo("Kostium Czarownicy", "Przebrania", 65.0, List.of("S", "M", "L")),
+            new ModelInfo("Strój Mikołaja", "Stroje świąteczne", 60.0, List.of("L", "XL")),
+            new ModelInfo("Kostium Elfa", "Stroje świąteczne", 50.0, List.of("S", "M")),
+            new ModelInfo("Strój krakowski", "Stroje ludowe", 70.0, List.of("S", "M", "L")),
+            new ModelInfo("Kapelusz cylinder", "Dodatki", 25.0, List.of("Uniwersalny")),
+            new ModelInfo("Maska wenecka", "Dodatki", 30.0, List.of("Uniwersalny")),
+            new ModelInfo("Peruka barokowa", "Dodatki", 40.0, List.of("Uniwersalny")),
+            new ModelInfo("Peleryna wampira", "Dodatki", 35.0, List.of("M", "L", "XL")),
+            new ModelInfo("Zestaw biżuterii „Królowa”", "Dodatki", 45.0, List.of("Uniwersalny")));
 
     private static final List<String> KOLORY = List.of("Czarny", "Czerwony", "Granatowy", "Zielony");
+    private final ComboBox<String> kategoria = new ComboBox<>("Kategoria");
 
     // krok 2 - formularz wyboru
     private final ComboBox<ModelInfo> model = new ComboBox<>("Model");
@@ -88,11 +94,11 @@ public class RezerwacjaView extends VerticalLayout {
         konfigurujDostepnosc();
         konfigurujWybrane();
 
-        FormLayout form = new FormLayout(model, rozmiar, odbior, zwrot);
+        FormLayout form = new FormLayout(kategoria, model, rozmiar, odbior, zwrot);
         form.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("500px", 2));
-        form.setColspan(model, 2);
+        form.setColspan(rozmiar, 2);
 
         tresc.add(
                 new H2("Nowa rezerwacja"),
@@ -117,7 +123,18 @@ public class RezerwacjaView extends VerticalLayout {
     // ------------------------------------------------------------------
 
     private void konfigurujFormularz() {
-        model.setItems(modele);
+        kategoria.setItems(modele.stream().map(ModelInfo::kategoria).distinct().toList());
+        kategoria.setRequiredIndicatorVisible(true);
+        kategoria.addValueChangeListener(e -> {
+            model.clear();
+            model.setItems(modele.stream()
+                    .filter(m -> m.kategoria().equals(e.getValue()))
+                    .toList());
+            model.setEnabled(e.getValue() != null);
+            ukryjDostepnosc();
+        });
+
+        model.setEnabled(false);
         model.setItemLabelGenerator(ModelInfo::nazwa);
         model.setRequiredIndicatorVisible(true);
         model.addValueChangeListener(e -> {
@@ -274,7 +291,7 @@ public class RezerwacjaView extends VerticalLayout {
 
     private boolean walidujFormularz() {
         boolean ok = true;
-
+        ok &= wymagane(kategoria.isEmpty(), kategoria, "Wybierz kategorię");
         ok &= wymagane(model.isEmpty(), model, "Wybierz model");
         ok &= wymagane(rozmiar.isEmpty(), rozmiar, "Wybierz rozmiar");
         ok &= wymagane(odbior.isEmpty(), odbior, "Podaj datę odbioru");
